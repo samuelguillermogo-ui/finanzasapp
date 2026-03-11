@@ -9,7 +9,7 @@ const AuthService = {
      * Sign up with email and password
      */
     async signUp(email, password, fullName) {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await supabaseClient.auth.signUp({
             email,
             password,
             options: {
@@ -25,7 +25,7 @@ const AuthService = {
      * Sign in with email and password
      */
     async signIn(email, password) {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email,
             password
         });
@@ -38,7 +38,7 @@ const AuthService = {
      * Sign out
      */
     async signOut() {
-        const { error } = await supabase.auth.signOut();
+        const { error } = await supabaseClient.auth.signOut();
         if (error) throw error;
         this.currentUser = null;
     },
@@ -47,7 +47,7 @@ const AuthService = {
      * Get current session
      */
     async getSession() {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
         if (error) throw error;
         if (session) {
             this.currentUser = session.user;
@@ -83,7 +83,7 @@ const AuthService = {
      * Listen for auth state changes
      */
     onAuthStateChange(callback) {
-        return supabase.auth.onAuthStateChange((event, session) => {
+        return supabaseClient.auth.onAuthStateChange((event, session) => {
             this.currentUser = session?.user || null;
             callback(event, session);
         });
@@ -93,7 +93,7 @@ const AuthService = {
      * Send password reset email
      */
     async resetPassword(email) {
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+        const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email);
         if (error) throw error;
         return data;
     }

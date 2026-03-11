@@ -25,7 +25,7 @@ const App = {
         this.bindEvents();
 
         // Check authentication state
-        const session = await authService.getSession();
+        const session = await AuthService.getSession();
         
         let hash = window.location.hash.slice(1) || 'dashboard';
 
@@ -58,7 +58,7 @@ const App = {
         // Auth check before entering a protected page
         if (page !== 'auth') {
             const isGuest = localStorage.getItem('finanzapp_guest_mode') === 'true';
-            const session = await authService.getSession();
+            const session = await AuthService.getSession();
             if (!session && !isGuest) {
                 page = 'auth';
             }
@@ -127,7 +127,7 @@ const App = {
                 <button class="btn btn-ghost btn-sm" onclick="App.logout()" title="Salir del modo invitado">→</button>
             `;
         } else {
-            const session = await authService.getSession();
+            const session = await AuthService.getSession();
             const email = session?.user?.email || 'Usuario';
             const letter = email.charAt(0).toUpperCase();
 
@@ -146,7 +146,7 @@ const App = {
 
     async logout() {
         if (!DataService.useLocalStorage) {
-            await authService.signOut();
+            await AuthService.signOut();
         } else {
             localStorage.removeItem('finanzapp_guest_mode');
         }
@@ -226,6 +226,10 @@ const App = {
             const pageModule = this.pages[this.currentPage].module();
             pageModule.render();
         }
+    },
+
+    handleAuthReady() {
+        this.navigate('dashboard');
     }
 };
 
